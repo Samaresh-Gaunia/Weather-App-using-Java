@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+</head>
+<body>
+
+<h2>Weather Forecast App</h2>
+
+<input type="text" id="city" placeholder="Enter city"/>
+<button onclick="getWeather()">Get Weather</button>
+
+<h3>Current Weather</h3>
+<pre id="current"></pre>
+
+<h3>5-Day Forecast</h3>
+<pre id="forecast"></pre>
+
+<script>
+function getWeather() {
+    const city = document.getElementById("city").value;
+
+    fetch(`http://localhost:8080/api/weather/current?city=${city}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("current").innerText =
+                `Temp: ${data.main.temp} °C\nHumidity: ${data.main.humidity}%`;
+        });
+
+    fetch(`http://localhost:8080/api/weather/forecast?city=${city}`)
+        .then(res => res.json())
+        .then(data => {
+            let forecast = "";
+            for (let i = 0; i < data.list.length; i += 8) {
+                forecast += `${data.list[i].dt_txt} → ${data.list[i].main.temp} °C\n`;
+            }
+            document.getElementById("forecast").innerText = forecast;
+        });
+}
+</script>
+
+</body>
+</html>
